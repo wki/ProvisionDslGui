@@ -50,7 +50,7 @@ namespace RemoteControl
         private string password;
         private bool isConnected;
 
-        private IList<ForwardedPort> ports;
+        private List<ForwardedPort> ports;
 
         public SshConnection(string host, string username)
             : this(host, SSH_PORT, username)
