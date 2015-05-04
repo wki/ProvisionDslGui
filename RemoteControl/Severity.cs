@@ -14,4 +14,3 @@ namespace RemoteControl
         Output // not a real severity level but a regular output
     }
 }
-
