@@ -8,7 +8,9 @@ namespace RemoteControl
     /// SshConnection
     /// </summary>
     /// <example>
-    /// // TODO: host, username, password/public key, ports
+    /// // TODO: Record execution status somewhere.
+    /// // TODO: what happens if chain throws exception somewhere?
+    /// 
     /// var remote = new SshConnection(host, username);
     /// 
     /// remote.Connect();
