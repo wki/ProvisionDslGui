@@ -7,6 +7,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using TwoPS.Processes;
 
+// TODO: kill rsync when main process terminates
+// TODO: get info when rsync dies
+
 namespace RemoteControl
 {
     /// <summary>
