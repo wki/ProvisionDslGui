@@ -45,7 +45,10 @@ namespace RemoteControl
         private string rsyncdConfigFile;
 
         private Process rsyncProcess;
-        private Task rsyncTask;
+        private Task<ProcessResult> rsyncTask;
+        private Timer timer;
+
+        private bool isDisposing;
 
         public RsyncDaemon(string rootDirectory)
             : this(rootDirectory, DEFAULT_RSYNC_PORT)
@@ -67,6 +70,10 @@ namespace RemoteControl
             this.rootDirectory = rootDirectory;
             this.localPort = localPort;
             this.rsyncModules = new List<string>(rsyncModules);
+
+            isDisposing = false;
+
+            Console.CancelKeyPress += new ConsoleCancelEventHandler(ConsoleCancelHandler);
 
             BuildRsyncdConfigFile();
             StartRsyncd();
@@ -98,11 +105,16 @@ namespace RemoteControl
             return config.ToString();
         }
 
+        private void ConsoleCancelHandler(object sender, ConsoleCancelEventArgs args)
+        {
+            Console.WriteLine("Program cancelled");
+        }
+
         private void StartRsyncd()
         {
             var options = new ProcessOptions(
                 RSYNC,
-                new string[] 
+                new [] 
                 {
                     "--daemon",
                     "--address", "127.0.0.1",
@@ -114,10 +126,35 @@ namespace RemoteControl
 
             rsyncProcess = new Process(options);
             rsyncTask = Task.Run(() => rsyncProcess.Run());
+
+            timer = new Timer(
+                ObserveProcessStatus,
+                new AutoResetEvent(false),
+                0,
+                500
+            );
+        }
+
+        public void ObserveProcessStatus(object o)
+        {
+            Console.WriteLine("Task Status: {0}", rsyncTask.Status);
+
+            if (isDisposing)
+                return;
+            
+            // RanToCompletion usually occurs when rsync fails to start.
+            if (rsyncTask.Status == TaskStatus.RanToCompletion)
+            {
+                Console.WriteLine("rsync stopped, exit status: {0}", rsyncProcess.Result.ExitCode);
+                timer.Change(int.MaxValue, int.MaxValue);
+                throw new InvalidOperationException("rsync terminated unexpectedly");
+            }
         }
 
         public void Dispose()
         {
+            isDisposing = true;
+
             Console.WriteLine("dispose RsyncDaemon");
             StopRsyncd();
             DeleteRsyncdConfigFile();
