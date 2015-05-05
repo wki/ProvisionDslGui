@@ -19,13 +19,14 @@ namespace RemoteControl
     ///   * log for read/write access of the log subdirectory
     ///   * result for read/write access of the result subdirectory
     /// 
+    /// the modules must be provided as an array of strings
     /// on the remote side, the rsync daemon may be used like this:
     /// 
     /// $ rsync -n -avxSH rsync://127.0.0.1:2873/local/whatever .
     /// 
     /// </description>
     /// <example>
-    /// using (new RsyncDaemon("/path/to/dir", new ["log"]))
+    /// using (new RsyncDaemon("/path/to/dir", new [] { "log" }))
     /// {
     ///     // do something that uses the rsync service
     /// }
