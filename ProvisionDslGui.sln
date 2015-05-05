@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProvisionDslGui", "Provisio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteControl", "RemoteControl\RemoteControl.csproj", "{6225CD43-85D2-4AB1-B776-999FD76901DC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RsyncTester", "RsyncTester\RsyncTester.csproj", "{CB8ACC18-F17E-4146-9C9A-87BB4B17DCE7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -19,5 +21,9 @@ Global
 		{A964CE8E-AF3F-48F3-BADD-BAA44B148F29}.Debug|x86.Build.0 = Debug|x86
 		{A964CE8E-AF3F-48F3-BADD-BAA44B148F29}.Release|x86.ActiveCfg = Release|x86
 		{A964CE8E-AF3F-48F3-BADD-BAA44B148F29}.Release|x86.Build.0 = Release|x86
+		{CB8ACC18-F17E-4146-9C9A-87BB4B17DCE7}.Debug|x86.ActiveCfg = Debug|x86
+		{CB8ACC18-F17E-4146-9C9A-87BB4B17DCE7}.Debug|x86.Build.0 = Debug|x86
+		{CB8ACC18-F17E-4146-9C9A-87BB4B17DCE7}.Release|x86.ActiveCfg = Release|x86
+		{CB8ACC18-F17E-4146-9C9A-87BB4B17DCE7}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 EndGlobal
