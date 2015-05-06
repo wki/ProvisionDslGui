@@ -42,7 +42,6 @@ namespace RemoteControl
     /// </example>
     public class SshConnection : IDisposable
     {
-        private const int SSH_PORT = 22;
 
         private SshClient sshClient;
         private string host;
@@ -55,7 +54,7 @@ namespace RemoteControl
         private List<ForwardedPort> ports;
 
         public SshConnection(string host, string username)
-            : this(host, SSH_PORT, username)
+            : this(host, Const.SSH_PORT, username)
         {
         }
 

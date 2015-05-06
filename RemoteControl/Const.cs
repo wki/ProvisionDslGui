@@ -15,8 +15,13 @@ namespace RemoteControl
     /// </description>
     public static class Const
     {
+        private static readonly string ENV_PREFIX = "PROVISION_";
+
         public static int RSYNC_PORT { get; private set; } = 2873;
         public static string RSYNC { get; private set; } = "rsync";
+
+        public static int SSH_PORT { get; private set; } = 22;
+
 
         // hint: static constructor runs befor first use
         static Const()
@@ -28,9 +33,9 @@ namespace RemoteControl
                 var variable = e.Key.ToString();
                 var value = e.Value;
 
-                if (variable.StartsWith("PROVISION_"))
+                if (variable.StartsWith(ENV_PREFIX))
                 {
-                    var constantName = variable.Remove(0, 10);
+                    var constantName = variable.Remove(0, ENV_PREFIX.Length);
                     var property = constTypeInfo.GetDeclaredProperty(constantName);
 
                     if (property != null)
