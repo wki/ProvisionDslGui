@@ -15,7 +15,7 @@ namespace RemoteControl
     /// </description>
     public static class Const
     {
-        public static int DEFAULT_RSYNC_PORT { get; private set; } = 2873;
+        public static int RSYNC_PORT { get; private set; } = 2873;
         public static string RSYNC { get; private set; } = "rsync";
 
         // hint: static constructor runs befor first use

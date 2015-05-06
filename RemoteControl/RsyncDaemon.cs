@@ -33,9 +33,6 @@ namespace RemoteControl
     /// </example>
     public class RsyncDaemon : IDisposable
     {
-        // can we read from ENV or Config?
-        private const int DEFAULT_RSYNC_PORT = 2873;
-
         private int localPort;
         private string rootDirectory;
         private List<string> rsyncModules;
@@ -48,7 +45,7 @@ namespace RemoteControl
         private bool isDisposing;
 
         public RsyncDaemon(string rootDirectory)
-            : this(rootDirectory, DEFAULT_RSYNC_PORT)
+            : this(rootDirectory, Const.RSYNC_PORT)
         {
         }
 
@@ -58,7 +55,7 @@ namespace RemoteControl
         }
 
         public RsyncDaemon(string rootDirectory, IEnumerable<string> rsyncModules)
-            : this(rootDirectory, DEFAULT_RSYNC_PORT, rsyncModules)
+            : this(rootDirectory, Const.RSYNC_PORT, rsyncModules)
         {
         }
 
