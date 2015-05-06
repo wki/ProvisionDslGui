@@ -35,7 +35,6 @@ namespace RemoteControl
     {
         // can we read from ENV or Config?
         private const int DEFAULT_RSYNC_PORT = 2873;
-        private const string RSYNC = "rsync"; 
 
         private int localPort;
         private string rootDirectory;
@@ -111,7 +110,7 @@ namespace RemoteControl
         private void StartRsyncd()
         {
             var options = new ProcessOptions(
-                RSYNC,
+                Const.RSYNC,
                 new [] 
                 {
                     "--daemon",

@@ -9,6 +9,8 @@ namespace RsyncTester
         {
             Console.WriteLine("Starting rsyncd #1...");
 
+            Const.PrintConstants();
+
             using (new RsyncDaemon("/Users/wolfgang/tmp"))
             {
                 Console.WriteLine("rsyncd #1 running. Press Enter to cancel");

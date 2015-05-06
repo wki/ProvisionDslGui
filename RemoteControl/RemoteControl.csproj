@@ -42,6 +42,7 @@
     <Compile Include="Severity.cs" />
     <Compile Include="RsyncDaemon.cs" />
     <Compile Include="HttpProxy.cs" />
+    <Compile Include="Const.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
