@@ -19,13 +19,15 @@ namespace RemoteControl.Tests
         {
             port = 2222;
 
-            // dir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            dir = "/tmp/rsync";
+            dir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            // dir = "/tmp/rsync";
+           
             Directory.CreateDirectory(dir);
             Directory.CreateDirectory(Path.Combine(dir, "log"));
 
             rsync = new RsyncDaemon(dir, port, new [] { "log" });
 
+            // FIXME: can we wait until port 2222 is reachable?
             Thread.Sleep(500);
         }
 
