@@ -3,10 +3,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6225CD43-85D2-4AB1-B776-999FD76901DC}</ProjectGuid>
+    <ProjectGuid>{8FCE53C2-3BC5-4E0D-914E-4C9BAF56E13B}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>RemoteControl</RootNamespace>
-    <AssemblyName>RemoteControl</AssemblyName>
+    <RootNamespace>RemoteControl.Tests</RootNamespace>
+    <AssemblyName>RemoteControl.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -29,29 +29,23 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="ProcessRunner">
-      <HintPath>..\packages\ProcessRunner.1.0.8\lib\net40\ProcessRunner.dll</HintPath>
-    </Reference>
-    <Reference Include="Renci.SshNet">
-      <HintPath>..\packages\SSH.NET.2014.4.6-beta2\lib\net40\Renci.SshNet.dll</HintPath>
-    </Reference>
-    <Reference Include="Common.Logging.Core">
-      <HintPath>..\packages\Common.Logging.Core.3.1.0\lib\net40\Common.Logging.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Common.Logging">
-      <HintPath>..\packages\Common.Logging.3.1.0\lib\net40\Common.Logging.dll</HintPath>
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SshConnection.cs" />
-    <Compile Include="Severity.cs" />
-    <Compile Include="RsyncDaemon.cs" />
-    <Compile Include="HttpProxy.cs" />
-    <Compile Include="Const.cs" />
+    <Compile Include="ConstTest.cs" />
+    <Compile Include="RsyncDaemonTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RemoteControl\RemoteControl.csproj">
+      <Project>{6225CD43-85D2-4AB1-B776-999FD76901DC}</Project>
+      <Name>RemoteControl</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

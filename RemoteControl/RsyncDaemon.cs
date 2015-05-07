@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Common.Logging;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -33,6 +34,8 @@ namespace RemoteControl
     /// </example>
     public class RsyncDaemon : IDisposable
     {
+        private static ILog log = LogManager.GetLogger(typeof(RsyncDaemon));
+
         private int localPort;
         private string rootDirectory;
         private List<string> rsyncModules;
@@ -61,6 +64,11 @@ namespace RemoteControl
 
         public RsyncDaemon(string rootDirectory, int localPort, IEnumerable<string>rsyncModules)
         {
+            log.Info(m => 
+                m("Start rsyncd for dir '{0}' on port {1} with modules {2}",
+                    rootDirectory, localPort, String.Join(", ", rsyncModules.Select(x => $"'{x}'"))
+                )
+            );
             this.rootDirectory = rootDirectory;
             this.localPort = localPort;
             this.rsyncModules = new List<string>(rsyncModules);
@@ -76,6 +84,7 @@ namespace RemoteControl
         private void BuildRsyncdConfigFile()
         {
             rsyncdConfigFile = Path.GetTempFileName().Replace(".tmp", ".conf");
+            log.Debug(m => m("create config file '{0}'", rsyncdConfigFile));
             File.WriteAllText(rsyncdConfigFile, BuildRsyncdConfig());
         }
 
@@ -101,6 +110,7 @@ namespace RemoteControl
 
         private void ConsoleCancelHandler(object sender, ConsoleCancelEventArgs args)
         {
+            log.Debug("Program cancelled");
             Console.WriteLine("Program cancelled");
         }
 
@@ -131,6 +141,10 @@ namespace RemoteControl
 
         public void ObserveProcessStatus(object o)
         {
+            // we could have died in the meantime...
+            if (rsyncTask == null)
+                return;
+            
             Console.WriteLine("Task Status: {0}", rsyncTask.Status);
 
             if (isDisposing)
@@ -147,9 +161,12 @@ namespace RemoteControl
 
         public void Dispose()
         {
+            if (isDisposing)
+                return;
+            
             isDisposing = true;
 
-            Console.WriteLine("dispose RsyncDaemon");
+            // Console.WriteLine("dispose RsyncDaemon");
             StopRsyncd();
             DeleteRsyncdConfigFile();
         }
@@ -158,7 +175,7 @@ namespace RemoteControl
         {
             if (rsyncProcess != null)
             {
-                Console.WriteLine("cancel process");
+                log.Debug("stop rsyncd process");
                 rsyncProcess.Cancel();
 
                 // disposing rsyncTask gives an error, so we omit it
@@ -172,6 +189,7 @@ namespace RemoteControl
         {
             if (rsyncdConfigFile != null && File.Exists(rsyncdConfigFile))
             {
+                log.Debug(m => m("remove config file '{0}'", rsyncdConfigFile));
                 File.Delete(rsyncdConfigFile);
             }
             rsyncdConfigFile = null;

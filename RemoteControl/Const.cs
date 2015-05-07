@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Common.Logging;
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Collections;
@@ -15,6 +16,8 @@ namespace RemoteControl
     /// </description>
     public static class Const
     {
+        private static ILog log = LogManager.GetLogger(typeof(Const));
+
         private static readonly string ENV_PREFIX = "PROVISION_";
 
         public static int RSYNC_PORT { get; private set; } = 2873;
@@ -26,6 +29,8 @@ namespace RemoteControl
         // hint: static constructor runs befor first use
         static Const()
         {
+            log.Info("Setup");
+
             var constTypeInfo = typeof(Const).GetTypeInfo();
 
             foreach (DictionaryEntry e in Environment.GetEnvironmentVariables())
@@ -40,6 +45,7 @@ namespace RemoteControl
 
                     if (property != null)
                     {
+                        log.Debug(m => m("Setting value for Const.{0} to '{1}'", constantName, value));
                         property.SetValue(null, Convert.ChangeType(value, property.PropertyType));
                     }
                 }
