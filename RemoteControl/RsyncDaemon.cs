@@ -1,12 +1,10 @@
 ﻿using Common.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using TwoPS.Processes;
 
 namespace RemoteControl
 {
@@ -42,8 +40,6 @@ namespace RemoteControl
         private string rsyncdConfigFile;
 
         private Process rsyncProcess;
-        private Task<ProcessResult> rsyncTask;
-        private Timer timer;
 
         private bool isDisposing;
 
@@ -116,47 +112,39 @@ namespace RemoteControl
 
         private void StartRsyncd()
         {
-            var options = new ProcessOptions(
-                Const.RSYNC,
-                new [] 
-                {
+            var commandLineArguments = 
+                String.Join(" ",
                     "--daemon",
                     "--address", "127.0.0.1",
                     "--no-detach",
                     "--port", localPort.ToString(),
                     "--config", rsyncdConfigFile
-                }
-            );
+                );
 
-            rsyncProcess = new Process(options);
-            rsyncTask = Task.Run(() => rsyncProcess.Run());
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = Const.RSYNC,
+                Arguments = commandLineArguments,
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false
+            };
 
-            timer = new Timer(
-                ObserveProcessStatus,
-                new AutoResetEvent(false),
-                0,
-                500
-            );
+            rsyncProcess = new Process();
+            rsyncProcess.StartInfo = startInfo;
+            rsyncProcess.EnableRaisingEvents = true;
+            rsyncProcess.Exited += RsyncProcess_Exited;
+            rsyncProcess.Start();
         }
 
-        public void ObserveProcessStatus(object o)
+        // Exited is dispatched to a different thread ID
+        // throwing an exception here is nonsense.
+        void RsyncProcess_Exited (object sender, EventArgs e)
         {
-            // we could have died in the meantime...
-            if (rsyncTask == null)
-                return;
-            
-            Console.WriteLine("Task Status: {0}", rsyncTask.Status);
-
-            if (isDisposing)
-                return;
-            
-            // RanToCompletion usually occurs when rsync fails to start.
-            if (rsyncTask.Status == TaskStatus.RanToCompletion)
-            {
-                Console.WriteLine("rsync stopped, exit status: {0}", rsyncProcess.Result.ExitCode);
-                timer.Change(int.MaxValue, int.MaxValue);
+            Console.WriteLine("Process exited, Thread ID:{0}", System.Threading.Thread.CurrentThread.ManagedThreadId);
+            if (!isDisposing)
                 throw new InvalidOperationException("rsync terminated unexpectedly");
-            }
         }
 
         public void Dispose()
@@ -176,11 +164,8 @@ namespace RemoteControl
             if (rsyncProcess != null)
             {
                 log.Debug("stop rsyncd process");
-                rsyncProcess.Cancel();
-
-                // disposing rsyncTask gives an error, so we omit it
-
-                rsyncTask = null;
+                rsyncProcess.Kill();
+                rsyncProcess.Dispose();
                 rsyncProcess = null;
             }
         }

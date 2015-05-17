@@ -29,9 +29,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="ProcessRunner">
-      <HintPath>..\packages\ProcessRunner.1.0.8\lib\net40\ProcessRunner.dll</HintPath>
-    </Reference>
     <Reference Include="Renci.SshNet">
       <HintPath>..\packages\SSH.NET.2014.4.6-beta2\lib\net40\Renci.SshNet.dll</HintPath>
     </Reference>
